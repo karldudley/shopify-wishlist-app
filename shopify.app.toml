@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "f9d5b22da29681146f5fc6b1379f3311"
+name = "wishlist-kd-app"
+handle = "wishlist-kd-app"
+application_url = "https://tutorials-pi-mediterranean-expiration.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "kd-app-dev.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/auth/callback",
+  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/auth/shopify/callback",
+  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false
