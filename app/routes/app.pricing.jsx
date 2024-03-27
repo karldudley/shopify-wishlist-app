@@ -9,10 +9,10 @@ import {
   BlockStack,
 } from "@shopify/polaris";
 
-export default function AdditionalPage() {
+export default function PricingPage() {
   return (
     <Page>
-      <ui-title-bar title="Additional page" />
+      <ui-title-bar title="Pricing" />
       <Layout>
         <Layout.Section>
           <Card>

@@ -3,7 +3,7 @@
 client_id = "f9d5b22da29681146f5fc6b1379f3311"
 name = "wishlist-kd-app"
 handle = "wishlist-kd-app"
-application_url = "https://tutorials-pi-mediterranean-expiration.trycloudflare.com"
+application_url = "https://mail-demonstrated-exam-affected.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/auth/callback",
-  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/auth/shopify/callback",
-  "https://tutorials-pi-mediterranean-expiration.trycloudflare.com/api/auth/callback"
+  "https://mail-demonstrated-exam-affected.trycloudflare.com/auth/callback",
+  "https://mail-demonstrated-exam-affected.trycloudflare.com/auth/shopify/callback",
+  "https://mail-demonstrated-exam-affected.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
