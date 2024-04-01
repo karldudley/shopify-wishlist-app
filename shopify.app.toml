@@ -3,7 +3,7 @@
 client_id = "f9d5b22da29681146f5fc6b1379f3311"
 name = "wishlist-kd-app"
 handle = "wishlist-kd-app"
-application_url = "https://mail-demonstrated-exam-affected.trycloudflare.com"
+application_url = "https://implemented-lm-veterans-incomplete.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://mail-demonstrated-exam-affected.trycloudflare.com/auth/callback",
-  "https://mail-demonstrated-exam-affected.trycloudflare.com/auth/shopify/callback",
-  "https://mail-demonstrated-exam-affected.trycloudflare.com/api/auth/callback"
+  "https://implemented-lm-veterans-incomplete.trycloudflare.com/auth/callback",
+  "https://implemented-lm-veterans-incomplete.trycloudflare.com/auth/shopify/callback",
+  "https://implemented-lm-veterans-incomplete.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

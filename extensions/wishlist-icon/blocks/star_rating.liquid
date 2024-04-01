@@ -1,0 +1,97 @@
+<div class="wishlist-inspire__icon" x-data="wishlist">
+  <button type="button" @click="addToWishList()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" :fill="wishlisted ? 'red' : '#fff' " stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+    {% if block.settings.text != blank %}
+      <span class="wishlist-inspire__icon--text">{{ block.settings.text }}</span>
+    {% endif %}
+  </button>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+      Alpine.data('wishlist', () => ({
+          wishlisted: false,
+          appUrl: "https://implemented-lm-veterans-incomplete.trycloudflare.com",
+          addToWishList() {
+            // If customer is not logged in, show an alert to login
+            {% unless customer %}
+              alert('Please login to add to wishlist')
+              return;
+            {% endunless %}
+
+            // TODO: send data to database
+            const formdata = new FormData();
+            formdata.append("customerId", "{{ customer.id }}");
+            formdata.append("productId", "{{ product.id }}");
+            formdata.append("shop", "{{ shop.permanent_domain }}");
+
+            const requestOptions = {
+              method: "POST",
+              body: formdata,
+              redirect: "follow"
+            };
+
+            fetch(this.appUrl + "/api/wishlist", requestOptions)
+              .then((response) => response.text())
+              .then((result) => this.wishlisted = ! this.wishlisted)
+              .catch((error) => console.error(error));
+
+          }
+      }))
+  })
+</script>
+
+<style>
+  .wishlist-inspire__icon {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wishlist-inspire__icon button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  .wishlist-inspire__icon--text {
+    margin-left: 5px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Wishlist Icon",
+  "target": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "autofill": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Add to Wishlist"
+    },
+    {
+      "type": "color",
+      "id": "colour",
+      "label": "Icon Colour",
+      "default": "#ff0000"
+    }
+  ]
+}
+{% endschema %}
