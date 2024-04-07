@@ -1,86 +1,50 @@
-import { useEffect } from "react";
 import { json } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import {
   Page,
   Layout,
   Text,
   Card,
-  Button,
   BlockStack,
-  Box,
   List,
   Link,
   InlineStack,
+  EmptyState,
+  DataTable,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
+import db from "../db.server";
+import { useLoaderData } from "@remix-run/react";
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
+  const auth = await authenticate.admin(request);
+  const shop = auth.session.shop;
+  console.log('shop: -------> ', shop);
+  // get data from database for that shop acending by id
+  const wishlistData = await db.wishlist.findMany({
+    where: {
+      shop: shop,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
 
-  return null;
+  console.log('wishlistData: -------> ', wishlistData);
+
+  return json(wishlistData);
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($input: ProductInput!) {
-        productCreate(input: $input) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          title: `${color} Snowboard`,
-          variants: [{ price: Math.random() * 100 }],
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
 
-  return json({
-    product: responseJson.data?.productCreate?.product,
-  });
 };
 
 export default function Index() {
-  const nav = useNavigation();
-  const actionData = useActionData();
-  const submit = useSubmit();
-  const isLoading =
-    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-  const productId = actionData?.product?.id.replace(
-    "gid://shopify/Product/",
-    "",
-  );
-
-  useEffect(() => {
-    if (productId) {
-      shopify.toast.show("Product created");
-    }
-  }, [productId]);
-  const generateProduct = () => submit({}, { replace: true, method: "POST" });
+  const wishlistData = useLoaderData();
+  const wishlistArray = wishlistData.map((item) => {
+    const createdAt = formatDistanceToNow(parseISO(item.createdAt), { addSuffix: true });
+    return [item.customerId, item.productId, createdAt];
+  });
 
   return (
     <Page>
@@ -90,82 +54,37 @@ export default function Index() {
         <Layout>
           <Layout.Section>
             <Card>
-              <BlockStack gap="500">
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Congrats on creating a new Shopify app 🎉
-                  </Text>
-                  <Text variant="bodyMd" as="p">
-                    This embedded app template uses{" "}
-                    <Link
-                      url="https://shopify.dev/docs/apps/tools/app-bridge"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    interface examples like an{" "}
-                    <Link url="/app/additional" removeUnderline>
-                      additional page in the app nav
-                    </Link>
-                    , as well as an{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      Admin GraphQL
-                    </Link>{" "}
-                    mutation demo, to provide a starting point for app
-                    development.
-                  </Text>
-                </BlockStack>
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingMd">
-                    Get started with products
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    Generate a product with GraphQL and get the JSON output for
-                    that product. Learn more about the{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      productCreate
-                    </Link>{" "}
-                    mutation in our API references.
-                  </Text>
-                </BlockStack>
-                <InlineStack gap="300">
-                  <Button loading={isLoading} onClick={generateProduct}>
-                    Generate a product
-                  </Button>
-                  {actionData?.product && (
-                    <Button
-                      url={`shopify:admin/products/${productId}`}
-                      target="_blank"
-                      variant="plain"
-                    >
-                      View product
-                    </Button>
-                  )}
-                </InlineStack>
-                {actionData?.product && (
-                  <Box
-                    padding="400"
-                    background="bg-surface-active"
-                    borderWidth="025"
-                    borderRadius="200"
-                    borderColor="border"
-                    overflowX="scroll"
-                  >
-                    <pre style={{ margin: 0 }}>
-                      <code>{JSON.stringify(actionData.product, null, 2)}</code>
-                    </pre>
-                  </Box>
-                )}
-              </BlockStack>
+            {wishlistData.length > 0 ? (
+                 <DataTable
+                    columnContentTypes={[
+                      'text',
+                      'text',
+                      'text',
+                    ]}
+                    headings={[
+                      'Customer ID',
+                      'Product ID',
+                      'Created At',
+                    ]}
+                    rows={wishlistArray}/>
+              ) : (
+                <EmptyState
+                  heading="Manage your wishlist products here"
+                  action={{
+                    content: 'Learn more',
+                    url: 'https://youtube.com/codeinspire',
+                    external: "true",
+                  }}
+                  secondaryAction={{
+                    content: 'Watch videos',
+                    url: 'https://youtube.com/codeinspire',
+                    external: "true",
+                  }}
+                  image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+                >
+                  <p>You don't have any products in your wishlist yet.</p>
+                </EmptyState>
+              )}
             </Card>
           </Layout.Section>
           <Layout.Section variant="oneThird">
@@ -176,6 +95,18 @@ export default function Index() {
                     App template specs
                   </Text>
                   <BlockStack gap="200">
+                  <InlineStack align="space-between">
+                      <Text as="span" variant="bodyMd">
+                        Creator
+                      </Text>
+                      <Link
+                        url="https://github.com/karldudley"
+                        target="_blank"
+                        removeUnderline
+                      >
+                        Karl Dudley
+                      </Link>
+                    </InlineStack>
                     <InlineStack align="space-between">
                       <Text as="span" variant="bodyMd">
                         Framework

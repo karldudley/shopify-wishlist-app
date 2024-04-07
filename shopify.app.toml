@@ -3,12 +3,12 @@
 client_id = "f9d5b22da29681146f5fc6b1379f3311"
 name = "wishlist-kd-app"
 handle = "wishlist-kd-app"
-application_url = "https://toshiba-milwaukee-worthy-baltimore.trycloudflare.com"
+application_url = "https://republican-aware-invitations-integer.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "kd-app-dev.myshopify.com"
+dev_store_url = "amiibo-central.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://toshiba-milwaukee-worthy-baltimore.trycloudflare.com/auth/callback",
-  "https://toshiba-milwaukee-worthy-baltimore.trycloudflare.com/auth/shopify/callback",
-  "https://toshiba-milwaukee-worthy-baltimore.trycloudflare.com/api/auth/callback"
+  "https://republican-aware-invitations-integer.trycloudflare.com/auth/callback",
+  "https://republican-aware-invitations-integer.trycloudflare.com/auth/shopify/callback",
+  "https://republican-aware-invitations-integer.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
